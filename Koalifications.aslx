@@ -1,0 +1,1307 @@
+<!--Saved by Quest 5.8.6836.13983-->
+<asl version="580">
+  <include ref="English.aslx" />
+  <include ref="Core.aslx" />
+  <game name="Koalifications">
+    <gameid>f6a4f29b-0e72-45f7-add5-b026e8a37ed2</gameid>
+    <version>1.0</version>
+    <firstpublished>2019</firstpublished>
+    <author>Breadtendo</author>
+    <showscore />
+    <showmoney />
+    <feature_limitinventory />
+    <feature_asktell />
+    <appendobjectdescription />
+    <talkJeremy type="boolean">false</talkJeremy>
+    <pov type="object">Koala</pov>
+    <start type="script">
+      msg ("You wake and your beloved forest home has been destroyed. Where once was beautiful eucalyptus forest, now lies the concrete jungle. Urbanization has struck again, and the new city, Eucatown, has replaced your home. Your belly grumbles; you are hungry and longing for your favorite food, eucalyptus bread.")
+      MoveObject (Koala, Alley)
+    </start>
+    <object name="Koala">
+      <inherit name="editor_object" />
+      <isDisguised type="boolean">false</isDisguised>
+      <pickpocket type="int">0</pickpocket>
+      <talkJeremy type="boolean">false</talkJeremy>
+    </object>
+    <object name="Zookeeper Uniform">
+      <inherit name="editor_object" />
+      <inherit name="wearable" />
+      <feature_wearable />
+      <wear_slots type="stringlist">
+        <value>body</value>
+      </wear_slots>
+      <changedworn type="script">
+        if (Zookeeper Uniform.worn = true) {
+          set (Koala, "isDisguised", true)
+        }
+        else {
+          set (Koala, "isDisguised", false)
+        }
+      </changedworn>
+    </object>
+  </game>
+  <object name="Fifth Avenue">
+    <inherit name="editor_room" />
+    <exitslistprefix>You can go to </exitslistprefix>
+    <descprefix>You are in</descprefix>
+    <beforeenter type="script">
+      msg ("Fifth Avenue seems like a poppin part of the city where some very important koalification resources could be found. You can smell the enticing scent of eucalyptus and bread coming from the nearby bakery; your mouth waters and your tummy grumbles. There is a tall skyscraper with lots of passerby going in and out of the entrance. The alley is somewhat smelly and you can see the Detective poking his head out. Finally, there is the Eucaway where everyone seems to be going to get to other places in the city.")
+    </beforeenter>
+    <enter type="script">
+      if (Koala.isDisguised = false) {
+        msg ("The public notices that you are a wild animal and a concerned individual calls animal control. You are captured and sent to the zoo to live in koala prison until you die.")
+        finish
+      }
+    </enter>
+    <object name="Bakery">
+      <inherit name="editor_room" />
+      <visible type="boolean">false</visible>
+      <description type="string"></description>
+      <descprefix>You are in </descprefix>
+      <enter type="script">
+        if (Koala.isDisguised = false) {
+          msg ("The public notices that you are a wild animal and a concerned individual calls animal control. You are captured and sent to the zoo to live in koala prison until you die.")
+          finish
+        }
+      </enter>
+      <beforeenter type="script">
+        msg ("You step into the Bakery and are immediately overcome by the enticing smell of baked eucalyptus bread. A Baker wearing a chefs hat and apron stands behind the counter moving baked goods around. The customer seems to be pondering whether or not they should purchase something. There's a back door that leads to the kitchen that is marked employees only.")
+      </beforeenter>
+      <object name="Baker">
+        <inherit name="editor_object" />
+        <inherit name="female" />
+        <speak type="script">
+          if (Chef Hat.worn = true) {
+            if (Apron.worn = true) {
+              msg ("The Baker says to you \"Hey get back in the kitchen!\" She must think you work at the Bakery.")
+            }
+          }
+          else {
+            msg ("Hi. I'm the Baker. Bread costs $5 and Eucabread is $10 if you want to buy it. If you are looking for a job, I am always willing to hire anyone who manages to put on a chefs hat and an apron.")
+          }
+        </speak>
+        <buybread type="script"><![CDATA[
+          if (Koala.money >=5) {
+            AddToInventory (Bread)
+            msg ("The Baker gives you a fresh loaf of bread.")
+          }
+          else {
+            msg ("You do not have enough money to buy bread.")
+          }
+        ]]></buybread>
+        <buyeucabread type="script"><![CDATA[
+          if (Koala.money >=10  ) {
+            AddToInventory (Eucabread)
+            msg ("The Baker gives you a fresh loaf of eucabread and you win the game! UwU")
+            finish
+          }
+          else {
+            msg ("You do not have enough money to buy eucabread.")
+          }
+        ]]></buyeucabread>
+        <object name="Eucabread">
+          <inherit name="editor_object" />
+        </object>
+        <object name="Bread">
+          <inherit name="editor_object" />
+          <price type="int">0</price>
+          <look>Yay non-eucalyptus carbsss! You can try to eat it, but you'll have the poops and die X_X</look>
+          <eat type="script">
+            msg ("You should have checked the bread out before eating it. You can only eat the eucabread #deathByPoops")
+            finish
+          </eat>
+        </object>
+      </object>
+      <object name="Customer">
+        <inherit name="editor_object" />
+        <inherit name="male" />
+        <speak>The bread here is so expensive.</speak>
+        <ask type="scriptdictionary">
+          <item key="bread">
+            msg ("I wish I had some of that bread. It's made with real eucalyptus. Perfect food for any koala that's trying to blend in by wearing human clothing. Too bad I'm not a koala trying to blend in by wearing human clothing.")
+          </item>
+          <item key="price">
+            msg ("The normal bread for human people is $5, but the special eucalyptus bread for human people and koala bears is $10.")
+          </item>
+        </ask>
+      </object>
+      <exit to="Fifth Avenue">
+        <scenery type="boolean">false</scenery>
+      </exit>
+      <object name="Kitchen">
+        <inherit name="editor_room" />
+        <visible type="boolean">false</visible>
+        <beforeenter type="script">
+          msg ("The Kitchen is small and dingy, but seems well used. It is very hot as the oven is in use.")
+        </beforeenter>
+        <exit to="Bakery" />
+        <object name="Oven">
+          <inherit name="editor_object" />
+          <look>Tis hot</look>
+          <displayverbs type="stringlist">
+            <value>Look at</value>
+          </displayverbs>
+          <bakeeucabread type="script">
+            if ((Got(Bread) or Got(Bread1) or Got(Bread2)) and (Got(Eucalyptus Tree) or Got(Eucalyptus Tree1))) {
+              msg ("You got the Eucabread and you win!")
+              finish
+            }
+            else {
+              msg ("You need bread and a eucalyptus tree in order to bake eucabread!")
+            }
+          </bakeeucabread>
+        </object>
+      </object>
+      <exit name="Kitchen Door" to="Kitchen">
+        <locked type="boolean">false</locked>
+        <runscript />
+        <script type="script">
+          if (Chef Hat.worn = true) {
+            if (Apron.worn = true) {
+              MoveObject (Koala, Kitchen)
+            }
+          }
+          else {
+            MoveObject (Koala, Bakery)
+            msg ("You cannot enter the kitchen unless you are an employee.")
+          }
+        </script>
+      </exit>
+    </object>
+    <object name="Skyscraper">
+      <inherit name="editor_room" />
+      <visible type="boolean">false</visible>
+      <enter type="script">
+        if (Koala.isDisguised = false) {
+          msg ("The public notices that you are a wild animal and a concerned individual calls animal control. You are captured and sent to the zoo to live in koala prison until you die.")
+          finish
+        }
+      </enter>
+      <beforeenter type="script">
+        msg ("The Skyscraper is very tall, not at all scalable like the trees in your forest but you saw a window washing scaffold going up and down the building. Inside, there is a businessman who seems to be distracted by his phone at the moment. A man holding some pizza shop coupons eyes the door like he's expecting someone to come.")
+      </beforeenter>
+      <object name="Businessman">
+        <inherit name="editor_object" />
+        <inherit name="male" />
+        <speak>I'm too busy doing business, go away.</speak>
+        <pickpocket type="script"><![CDATA[
+          if (Koala.pickpocket >= 3) {
+            msg ("You steal the unwitting businessman's driver license. ")
+            AddToInventory (id)
+            set (Koala, "pickpocket", Koala.pickpocket+1)
+          }
+          else {
+            msg ("The businessman eyes you as you approach him. Maybe you still need a little practice.")
+          }
+        ]]></pickpocket>
+        <object name="id">
+          <inherit name="editor_object" />
+          <look>Looks like Carl was having a bad day when he got his id picture taken :/</look>
+        </object>
+      </object>
+      <object name="Window Washing Scaffold">
+        <inherit name="editor_room" />
+        <displayverbs type="stringlist">
+          <value>Look at</value>
+        </displayverbs>
+        <climb type="script">
+          if (Janitor Uniform.worn = true) {
+            MoveObject (Koala, Window Washing Scaffold)
+          }
+          else {
+            msg ("You would need a windows washers outfit to avoid suspicion.")
+          }
+        </climb>
+        <beforeenter type="script">
+          msg ("You climb onto the scaffold and there's an open window where the smells of baking bread are coming from. Maybe you can grab some :P")
+        </beforeenter>
+        <object name="Window">
+          <inherit name="editor_room" />
+          <objectslistprefix>You can see</objectslistprefix>
+          <visible type="boolean">false</visible>
+          <displayverbs type="stringlist">
+            <value>Look at</value>
+          </displayverbs>
+          <beforeenter type="script">
+            msg ("You peer into the window and you see a fresh loaf of bread sitting right on the table!")
+          </beforeenter>
+          <object name="Bread2">
+            <inherit name="editor_object" />
+            <alias>Bread</alias>
+            <look>Yay non-eucalyptus carbsss! You can try to eat it, but you'll have the poops and die X_X</look>
+            <displayverbs type="stringlist">
+              <value>Look at</value>
+            </displayverbs>
+            <steal type="script"><![CDATA[
+              if (Koala.pickpocket >= 3) {
+                AddToInventory (Bread2)
+              }
+              else {
+                msg ("You don't have enough practice stealing things to do that.")
+              }
+            ]]></steal>
+            <eat type="script">
+              msg ("You should have checked the bread out before eating it. You can only eat the eucabread #deathByPoops")
+              finish
+            </eat>
+          </object>
+          <exit to="Window Washing Scaffold" />
+        </object>
+        <exit to="Skyscraper" />
+        <exit to="Window" />
+      </object>
+      <exit to="Fifth Avenue" />
+      <object name="Hungry Man">
+        <inherit name="editor_object" />
+        <inherit name="male" />
+        <speak>Man, I could really go for some pizza right now... I got all these coupons, but no pizza ¯\_(ツ)_/¯ </speak>
+        <attr name="feature_usegive" type="boolean">false</attr>
+      </object>
+    </object>
+    <object name="Alley">
+      <inherit name="editor_room" />
+      <descprefix>You are in </descprefix>
+      <description type="string"></description>
+      <visible type="boolean">false</visible>
+      <dropdestination type="object">Alley</dropdestination>
+      <beforeenter type="script">
+        msg ("The dumpster still smells...")
+      </beforeenter>
+      <object name="Trashbag">
+        <inherit name="editor_object" />
+        <inherit name="container_closed" />
+        <inventoryverbs type="stringlist">
+          <value>Look at</value>
+          <value>Drop</value>
+          <value>Open</value>
+        </inventoryverbs>
+        <displayverbs type="stringlist">
+          <value>Look at</value>
+          <value>Take</value>
+          <value>Open</value>
+        </displayverbs>
+        <take />
+        <takemsg>You take the bag.</takemsg>
+        <dropmsg>You drop the bag.</dropmsg>
+        <feature_container />
+        <open />
+        <hidechildren />
+        <listchildren />
+        <listchildrenprefix>It contains</listchildrenprefix>
+        <isopen type="boolean">false</isopen>
+        <look>It's an old trashbag. </look>
+        <openmsg>You open the trashbag to find various clothes.</openmsg>
+        <object name="business suit">
+          <inherit name="editor_object" />
+          <inherit name="wearable" />
+          <inroomdescription>It's a grown up business suit</inroomdescription>
+          <feature_wearable />
+          <wear_slots type="stringlist">
+            <value>body</value>
+          </wear_slots>
+          <wearmsg>You put on the business suit. You are very good looking.</wearmsg>
+          <attr name="wear_layer" type="int">2</attr>
+          <attr name="feature_startscript" type="boolean">false</attr>
+          <wear_adjverbs />
+          <look>Oh how professional.</look>
+          <inventoryverbs type="stringlist">
+            <value>Look at</value>
+            <value>Drop</value>
+            <value>Wear</value>
+            <value>Remove</value>
+          </inventoryverbs>
+          <changedworn type="script">
+            if (business suit.worn = true) {
+              set (Koala, "isDisguised", true)
+            }
+            else {
+              set (Koala, "isDisguised", false)
+            }
+          </changedworn>
+        </object>
+        <object name="kids tshirt">
+          <inherit name="editor_object" />
+          <inherit name="wearable" />
+          <feature_wearable />
+          <wear_slots type="stringlist">
+            <value>body</value>
+          </wear_slots>
+          <wearmsg>You put on the children's tshirt.</wearmsg>
+          <look>Looks like this kid was into Eucanite smh</look>
+          <inventoryverbs type="stringlist">
+            <value>Look at</value>
+            <value>Drop</value>
+            <value>Wear</value>
+            <value>Remove</value>
+          </inventoryverbs>
+          <changedworn type="script">
+            if (kids tshirt.worn = true) {
+              set (Koala, "isDisguised", true)
+            }
+            else {
+              set (Koala, "isDisguised", false)
+            }
+          </changedworn>
+        </object>
+        <object name="flip flops">
+          <inherit name="editor_object" />
+          <inherit name="wearable" />
+          <feature_wearable />
+          <wear_slots type="stringlist">
+            <value>paws</value>
+          </wear_slots>
+          <wearmsg>They don't fit on your koala paws that well, but you manage to put them on.</wearmsg>
+          <look>Ay look at these nice Eucidas Boosts</look>
+          <inventoryverbs type="stringlist">
+            <value>Look at</value>
+            <value>Drop</value>
+            <value>Wear</value>
+            <value>Remove</value>
+          </inventoryverbs>
+        </object>
+      </object>
+      <object name="Detective">
+        <inherit name="editor_object" />
+        <inherit name="male" />
+        <look>The detective glances at you. As you look longer, you realize that it is actually just a raccoon in a detective's hat. </look>
+        <speak>Hi. I'm Detective Raccoon. I've been around this city, if you want to get by without animal control catching you, you'll have to find some disguises. Human clothing is the easiest to find. If you have more questions feel free to ask me about anything (ask Detective about pickpocketing). </speak>
+        <askdefault type="script">
+          msg ("I don't know about that.")
+        </askdefault>
+        <ask type="scriptdictionary">
+          <item key="pickpocket pickpocketing stealing">
+            msg ("Humans are pretty easy to steal from, but you'll probably need some practice. People at the park and kids at the school on Essential Way are pretty dumb.")
+          </item>
+          <item key="eucabread">
+            msg ("You can obtain eucabread by buying it or baking eucalyptus leaves with normal bread. All of these can be found around town.")
+          </item>
+        </ask>
+      </object>
+      <exit to="Fifth Avenue">
+        <runscript type="boolean">false</runscript>
+        <script type="script">
+        </script>
+      </exit>
+    </object>
+    <exit to="Bakery">
+      <scenery type="boolean">false</scenery>
+      <visible />
+    </exit>
+    <exit to="Alley">
+      <scenery type="boolean">false</scenery>
+    </exit>
+    <exit to="Skyscraper">
+      <scenery type="boolean">false</scenery>
+    </exit>
+    <exit to="Eucaway" />
+  </object>
+  <object name="Eucaway">
+    <inherit name="editor_room" />
+    <enter type="script">
+      if (Koala.isDisguised = false) {
+        msg ("The public notices that you are a wild animal and a concerned individual calls animal control. You are captured and sent to the zoo to live in koala prison until you die.")
+        finish
+      }
+    </enter>
+    <beforeenter type="script">
+      msg ("Yike it smells like pee, but if you have a eucapass, you can go anywhere in the city. A police officer keeps watch while a mother and her kids scramble to catch the next train. There is a college student who looks like he hit the eucaganja.")
+    </beforeenter>
+    <object name="Police Officer">
+      <inherit name="editor_object" />
+      <inherit name="male" />
+      <look>You can see the officer's badge which reads EPD (Eucatown Police Department).</look>
+      <speak type="script">
+        if (kids tshirt.worn = true) {
+          if (not Got(Eucapass)) {
+            msg ("You tap the police officer on the shoulder. He asks for where your parents are. You tell him that they told you they would be right back, but never did.The police officer gives you a eucapass.")
+            AddToInventory (Eucapass)
+          }
+          else {
+            msg ("The police officer looks at you funny.")
+          }
+        }
+        else {
+          msg ("If you see any kids without eucapasses send them my way.")
+        }
+      </speak>
+    </object>
+    <object name="Mother">
+      <inherit name="editor_object" />
+      <inherit name="female" />
+      <look>She seems frazzled and overworked.</look>
+      <speak type="script">
+        if (kids tshirt.worn = true) {
+          if (not Got(Eucapass)) {
+            msg ("You tap the mother on the shoulder and she turns and asks you  where your parents are. You say that they have left you and the concerned mother gives you a eucapass")
+            AddToInventory (Eucapass)
+          }
+          else {
+            msg ("The mother looks at you funny.")
+          }
+        }
+        else {
+          msg ("I get so sad when I see kids are stuck without any eucapasses.")
+        }
+      </speak>
+      <object name="Eucapass">
+        <inherit name="editor_object" />
+        <look>You can go anywhere with this pass!</look>
+        <inventoryverbs type="stringlist">
+          <value>Look at</value>
+          <value>Use</value>
+        </inventoryverbs>
+      </object>
+    </object>
+    <object name="boy">
+      <inherit name="editor_object" />
+      <inherit name="male" />
+      <speak>Hi friend! I'm going to school with my mom and my sister!</speak>
+      <look>He has brown hair.</look>
+      <take type="boolean">false</take>
+    </object>
+    <object name="girl">
+      <inherit name="editor_object" />
+      <inherit name="female" />
+      <speak>Hi friend! I'm going to school with my mom and my brother!</speak>
+      <look>She has curly blonde hair.</look>
+    </object>
+    <object name="College Student">
+      <inherit name="editor_object" />
+      <inherit name="male" />
+      <speak><![CDATA[Hey kid, I've been working at a pizza shop, but the boss makes me work this <b>job</b> too much!]]></speak>
+      <look>You notice that the college student is wearing a pizza delivery hat.</look>
+      <ask type="scriptdictionary">
+        <item key="job">
+          msg ("Why am I still even working for this dumb pizza place! Here, take this hat.")
+          AddToInventory (Pizza Shop Hat)
+        </item>
+      </ask>
+      <object name="Pizza Shop Hat">
+        <inherit name="editor_object" />
+        <inherit name="wearable" />
+        <feature_wearable />
+        <wear_slots type="stringlist">
+          <value>head</value>
+        </wear_slots>
+        <look>You can see the sweatstains of being overworked and it smells oily.</look>
+        <wearmsg>It's kinda gross, but you gotta do what you gotta do</wearmsg>
+        <inventoryverbs type="stringlist">
+          <value>Look at</value>
+          <value>Drop</value>
+          <value>Wear</value>
+          <value>Remove</value>
+        </inventoryverbs>
+      </object>
+    </object>
+    <exit to="Fifth Avenue" />
+    <exit name="Train to Essential Way" to="Essential Way">
+      <locked type="boolean">false</locked>
+      <lockmessage type="string"></lockmessage>
+      <runscript />
+      <script type="script">
+        if (Got(Eucapass)) {
+          msg ("You hop on the euca train and take the euca line to Essential Way.")
+          MoveObject (Koala, Essential Way)
+        }
+        else {
+          msg ("You need a eucaway pass to take the train.")
+        }
+      </script>
+    </exit>
+    <exit to="Herbivore Street">
+      <runscript />
+      <script type="script">
+        if (Got(Eucapass)) {
+          msg ("You hop on the euca train and take the euca line to Herbivore Street")
+          MoveObject (Koala, Herbivore Street)
+        }
+        else {
+          msg ("You need a eucaway pass to take the train.")
+        }
+      </script>
+    </exit>
+    <object name="ATM">
+      <inherit name="editor_object" />
+      <feature_usegive />
+      <displayverbs type="stringlist">
+        <value>Look at</value>
+      </displayverbs>
+      <look>It'a an automated teller machine machine.</look>
+      <speak>Beep boop bop.</speak>
+      <use type="script">
+      </use>
+      <useon type="scriptdictionary">
+        <item key="Credit Card">
+          IncreaseMoney (10)
+          RemoveObject (Credit Card)
+          msg ("The ATM eats the credit card and spits out $10.")
+        </item>
+      </useon>
+    </object>
+  </object>
+  <object name="Essential Way">
+    <inherit name="editor_room" />
+    <enter type="script">
+      if (Koala.isDisguised = false) {
+        msg ("The public notices that you are a wild animal and a concerned individual calls animal control. You are captured and sent to the zoo to live in koala prison until you die.")
+        finish
+      }
+    </enter>
+    <beforeenter type="script">
+      msg ("Wow everything here is like the essential things in a human's life. The bank is here for money, there's a school and a park where kids can hang out after school. ")
+    </beforeenter>
+    <object name="Bank">
+      <inherit name="editor_room" />
+      <visible type="boolean">false</visible>
+      <enter type="script">
+        if (Koala.isDisguised = false) {
+          msg ("The public notices that you are a wild animal and a concerned individual calls animal control. You are captured and sent to the zoo to live in koala prison until you die.")
+          finish
+        }
+      </enter>
+      <beforeenter type="script">
+        msg ("Everyone here looks very official and put together. There's a banker behind the desk.")
+      </beforeenter>
+      <object name="Banker">
+        <inherit name="editor_object" />
+        <inherit name="female" />
+        <look>She looks bored, but rich.</look>
+        <speak type="script">
+          msg ("Hey there, I'm the banker. I get paid the big bucks to give credit cards to anyone with a business suit and an official id.")
+          if (business suit.worn = true) {
+            if (Got(id)) {
+              msg ("I see you have an id, here's a credit card with a whopping $10.")
+              AddToInventory (Credit Card)
+            }
+          }
+        </speak>
+        <ask type="scriptdictionary">
+          <item key="credit card">
+            if (business suit.worn = true) {
+              if (Got(id)) {
+                msg ("Ah! I see that you are trusted businessman by your business suit and official id. Here's a credit card that you can have!")
+                AddToInventory (Credit Card)
+              }
+              else {
+                msg ("Hmmm, you seem pretty trustworthy with your business suit, but I still need to see your id before I can give you a credit card, sir.")
+              }
+            }
+            else {
+              msg ("Hey! You're not a businessman! If you were a business man I could give you a credit card, but you're not!")
+            }
+          </item>
+        </ask>
+        <object name="Credit Card">
+          <inherit name="editor_object" />
+          <look>It has a picture of eucalyptus on it. I didn't know there were credit cards with such low limits #lame.</look>
+          <feature_usegive />
+          <use type="script">
+            if (game.pov.parent = Eucaway) {
+              IncreaseMoney (10)
+              RemoveObject (Credit Card)
+              msg ("The ATM eats the credit card and spits out $10.")
+            }
+            else {
+              msg ("You can't use this here.")
+            }
+          </use>
+          <selfuseon type="scriptdictionary" />
+        </object>
+      </object>
+      <exit to="Essential Way" />
+    </object>
+    <object name="Park">
+      <inherit name="editor_room" />
+      <visible type="boolean">false</visible>
+      <enter type="script">
+        if (Koala.isDisguised = false) {
+          msg ("The public notices that you are a wild animal and a concerned individual calls animal control. You are captured and sent to the zoo to live in koala prison until you die.")
+          finish
+        }
+      </enter>
+      <beforeenter type="script">
+        msg ("The park is very green and there are trees around. There's also some dumb tourists walking around and you heard there's a friendly fountain that is eager to talk to anyone.")
+      </beforeenter>
+      <object name="Kyle">
+        <inherit name="editor_object" />
+        <inherit name="male" />
+        <stolenFrom type="boolean">false</stolenFrom>
+        <displayverbs type="stringlist">
+          <value>Speak to</value>
+        </displayverbs>
+        <speak>He doesn't say anything, but he waves to you with his hand at waist height, lowkey seems like a weird guy.</speak>
+        <pickpocket type="script">
+          if (Kyle.stolenFrom = false) {
+            msg ("You take $1 from the skinny and ignorant young man.")
+            IncreaseMoney (1)
+            set (Koala, "pickpocket", Koala.pickpocket+1)
+            set (Kyle, "stolenFrom", true)
+          }
+          else {
+            msg ("You've already pickpocketed Kyle!")
+          }
+        </pickpocket>
+      </object>
+      <object name="Jason">
+        <inherit name="editor_object" />
+        <inherit name="male" />
+        <stolenFrom type="boolean">false</stolenFrom>
+        <displayverbs type="stringlist">
+          <value>Speak to</value>
+        </displayverbs>
+        <speak>Hi! Are you from the faarest, do you have paaairents, also do you have a favorite chaaaracter? (Although he seemed like a pretty confused guy, so are you now).</speak>
+        <pickpocket type="script">
+          if (Jason.stolenFrom = false) {
+            msg ("You take $1 from the nerdy young man. He seems very confused.")
+            IncreaseMoney (1)
+            set (Koala, "pickpocket", Koala.pickpocket+1)
+            set (Jason, "stolenFrom", true)
+          }
+          else {
+            msg ("You've already pickpocketed Jason")
+          }
+        </pickpocket>
+      </object>
+      <object name="Jess">
+        <inherit name="editor_object" />
+        <inherit name="female" />
+        <stolenFrom type="boolean">false</stolenFrom>
+        <speak>Jess says owo.</speak>
+        <pickpocket type="script">
+          if (Jess.stolenFrom = false) {
+            msg ("You take $1 from the nice young lady. You should be ashamed.")
+            IncreaseMoney (1)
+            set (Koala, "pickpocket", Koala.pickpocket+1)
+            set (Jess, "stolenFrom", true)
+          }
+          else {
+            msg ("You've already pickpocketed Jess!")
+          }
+        </pickpocket>
+      </object>
+      <object name="Fountain">
+        <inherit name="editor_object" />
+        <speak>The fountain bubbles back in response.</speak>
+        <inroomdescription type="string"></inroomdescription>
+        <look>The fountain is an ordinary fountain. There are some coins from wishful people at the bottom. It bubbles peacefully.</look>
+        <take type="boolean">false</take>
+        <hasCoins />
+        <displayverbs type="stringlist">
+          <value>Look at</value>
+        </displayverbs>
+        <takecoins type="script">
+          if (Fountain.hasCoins = true) {
+            msg ("You reach in and steal the hopes and dreams of many children. They were worth $2.")
+            IncreaseMoney (2)
+            set (Fountain, "hasCoins", false)
+          }
+          else {
+            msg ("There are no coins left.")
+          }
+        </takecoins>
+      </object>
+      <exit to="Essential Way" />
+    </object>
+    <object name="School">
+      <inherit name="editor_room" />
+      <visible type="boolean">false</visible>
+      <enter type="script">
+        if (Koala.isDisguised = false) {
+          msg ("The public notices that you are a wild animal and a concerned individual calls animal control. You are captured and sent to the zoo to live in koala prison until you die.")
+          finish
+        }
+      </enter>
+      <beforeenter type="script">
+        msg ("This school is very big. You see a janitor with a mop walk into the Janitor Closet. Nearby, there's a science classroom, an art classroom, and a home economics classroom. Outside some kids are on the playground.")
+      </beforeenter>
+      <object name="Janitor Closet">
+        <inherit name="editor_room" />
+        <visible type="boolean">false</visible>
+        <beforeenter type="script">
+          msg ("It's very small.")
+        </beforeenter>
+        <object name="Janitor Uniform">
+          <inherit name="editor_object" />
+          <inherit name="wearable" />
+          <feature_wearable />
+          <wear_slots type="stringlist">
+            <value>body</value>
+          </wear_slots>
+          <wearmsg>You put on the janitor uniform. You look like a maintenance worker.</wearmsg>
+          <look>It's a navy jumpsuit basically. It could probably pass as a lot of different uniforms.</look>
+          <inventoryverbs type="stringlist">
+            <value>Look at</value>
+            <value>Drop</value>
+            <value>Wear</value>
+            <value>Remove</value>
+          </inventoryverbs>
+          <changedworn type="script">
+            if (Janitor Uniform.worn = true) {
+              set (Koala, "isDisguised", true)
+            }
+            else {
+              set (Koala, "isDisguised", false)
+            }
+          </changedworn>
+        </object>
+        <exit to="School" />
+      </object>
+      <object name="Science Classroom">
+        <inherit name="editor_room" />
+        <visible type="boolean">false</visible>
+        <beforeenter type="script">
+          msg ("No one is in here, but you spot a eucalyptus plant soaking in some sun.")
+        </beforeenter>
+        <object name="Eucalyptus Plant">
+          <inherit name="editor_object" />
+          <take />
+          <look>It looks like a pretty bad science project.</look>
+          <ontake type="script">
+            msg ("A kid named Jeremy comes up and says \"Hey, that's mine! I'm taking this home with me, you can come over and see it whenever you want.\"")
+            RemoveObject (Eucalyptus Plant)
+            set (Koala, "talkJeremy", true)
+          </ontake>
+        </object>
+        <exit to="School" />
+      </object>
+      <object name="Playground">
+        <inherit name="editor_room" />
+        <visible type="boolean">false</visible>
+        <beforeenter type="script">
+          msg ("There are a bunch of kids everywhere, but three stand out to you. One on the swing, one on the monkeybars, and one on the slide. ")
+        </beforeenter>
+        <exit to="School" />
+        <object name="Sally">
+          <inherit name="editor_object" />
+          <inherit name="female" />
+          <stolenFrom type="boolean">false</stolenFrom>
+          <look>Sally keeps going up and down the slide.</look>
+          <speak>You wanna join me on the slide?</speak>
+          <pickpocket type="script">
+            if (Sally.stolenFrom = false) {
+              msg ("You take $1 from Sally. Who knows how she got it.")
+              IncreaseMoney (1)
+              set (Koala, "pickpocket", Koala.pickpocket+1)
+              set (Sally, "stolenFrom", true)
+            }
+          </pickpocket>
+        </object>
+        <object name="Jeremy">
+          <inherit name="editor_object" />
+          <inherit name="male" />
+          <stolenFrom type="boolean">false</stolenFrom>
+          <look>Jeremy is on the swing and thinks he's cool when he jumps off.</look>
+          <speak>Hey, wanna swing with me?</speak>
+          <pickpocket type="script">
+            if (Jeremy.stolenFrom = false) {
+              msg ("You take $1 from Jeremy. I bet it was his allowance from last week.")
+              IncreaseMoney (1)
+              set (Koala, "pickpocket", Koala.pickpocket+1)
+              set (Jeremy, "stolenFrom", true)
+            }
+          </pickpocket>
+        </object>
+        <object name="Derek">
+          <inherit name="editor_object" />
+          <inherit name="male" />
+          <stolenFrom type="boolean">false</stolenFrom>
+          <look>Derek struggles to make it across the monkeybars.</look>
+          <speak>These are my monkeybars, go away!</speak>
+          <pickpocket type="script">
+            if (Derek.stolenFrom = false) {
+              msg ("You take $1 from Derek. It was probably his lunch money.")
+              IncreaseMoney (1)
+              set (Koala, "pickpocket", Koala.pickpocket+1)
+              set (Derek, "stolenFrom", true)
+            }
+          </pickpocket>
+        </object>
+      </object>
+      <object name="Art Classroom">
+        <inherit name="editor_room" />
+        <visible type="boolean">false</visible>
+        <beforeenter type="script">
+          msg ("The classroom looks pretty empty, all you see is a can of brown paint.")
+        </beforeenter>
+        <exit to="School" />
+        <object name="Brown Paint1">
+          <inherit name="editor_object" />
+          <alias>Brown Paint</alias>
+          <take />
+          <feature_usegive />
+          <look>You could use the paint on canvas, paper, or even clothes.</look>
+          <speak>... paint can't talk duhhhh</speak>
+          <use type="script">
+            if (Got(Janitor Uniform)) {
+              AddToInventory (Zookeeper Uniform)
+              RemoveObject (Brown Paint1)
+              RemoveObject (Janitor Uniform)
+              msg ("You paint the janitor's uniform to look like a zookeeper's.")
+            }
+          </use>
+          <selfuseon type="scriptdictionary">
+            <item key="Janitor Uniform">
+              AddToInventory (Zookeeper Uniform)
+              RemoveObject (Brown Paint1)
+              RemoveObject (Janitor Uniform)
+            </item>
+          </selfuseon>
+        </object>
+      </object>
+      <exit to="Essential Way" />
+      <exit to="Science Classroom" />
+      <exit to="Art Classroom" />
+      <exit to="Playground" />
+      <exit to="Home Economics Classroom" />
+      <exit to="Janitor Closet" />
+      <object name="Home Economics Classroom">
+        <inherit name="editor_room" />
+        <visible type="boolean">false</visible>
+        <beforeenter type="script">
+          msg ("You could unleash your inner Gordon Ramsay with the chef hat and apron hanging up in here.")
+        </beforeenter>
+        <exit to="School" />
+        <object name="Chef Hat">
+          <inherit name="editor_object" />
+          <inherit name="wearable" />
+          <feature_wearable />
+          <wear_slots type="stringlist">
+            <value>head</value>
+          </wear_slots>
+          <wearmsg>You put on the chef hat. You look like you could be a baker.</wearmsg>
+          <look>Do chefs even wear hats anymore?</look>
+          <inventoryverbs type="stringlist">
+            <value>Look at</value>
+            <value>Drop</value>
+            <value>Wear</value>
+            <value>Remove</value>
+          </inventoryverbs>
+        </object>
+        <object name="Apron">
+          <inherit name="editor_object" />
+          <inherit name="wearable" />
+          <feature_wearable />
+          <wear_slots type="stringlist">
+            <value>body</value>
+          </wear_slots>
+          <wearmsg>You put on the apron. Might as well get started on that dough.</wearmsg>
+          <look>The apron has flowers and bunnies on it.</look>
+          <inventoryverbs type="stringlist">
+            <value>Look at</value>
+            <value>Drop</value>
+            <value>Wear</value>
+            <value>Remove</value>
+          </inventoryverbs>
+          <changedworn type="script">
+            if (Apron.worn = true) {
+              set (Koala, "isDisguised", true)
+            }
+            else {
+              set (Koala, "isDisguised", false)
+            }
+          </changedworn>
+        </object>
+      </object>
+    </object>
+    <exit to="Eucaway" />
+    <exit to="Bank" />
+    <exit to="Park" />
+    <exit to="School" />
+  </object>
+  <object name="Herbivore Street">
+    <inherit name="editor_room" />
+    <enter type="script">
+      if (Koala.isDisguised = false) {
+        msg ("The public notices that you are a wild animal and a concerned individual calls animal control. You are captured and sent to the zoo to live in koala prison until you die.")
+        finish
+      }
+    </enter>
+    <beforeenter type="script">
+      msg ("This seems like a hodgepodge of everything. There's a home improvement store that also has a garden center. A few houses are on the street, maybe some of the kids from the school live here. A pizza shop with a big sign, missing letters, stands on the street corner. The zoo is also here for a nice weekend activity.")
+    </beforeenter>
+    <object name="Home Improvement Store">
+      <inherit name="editor_room" />
+      <visible type="boolean">false</visible>
+      <enter type="script">
+        if (Koala.isDisguised = false) {
+          msg ("The public notices that you are a wild animal and a concerned individual calls animal control. You are captured and sent to the zoo to live in koala prison until you die.")
+          finish
+        }
+      </enter>
+      <beforeenter type="script">
+        msg ("There's a store clerk tending to multiple items in the store.")
+      </beforeenter>
+      <object name="Store Clerk">
+        <inherit name="editor_object" />
+        <inherit name="female" />
+        <look>She seems stressed that she's the only one working now.</look>
+        <speak type="script">
+          if (Koala.isDisguised = true) {
+            msg ("The Store Clerk says to you \"Hi, can I help you with anything ?\" ")
+          }
+          else {
+            finish
+          }
+        </speak>
+        <buyeucalyptustree type="script"><![CDATA[
+          if (Koala.money >=5) {
+            AddToInventory (Eucalyptus Tree)
+          }
+          else {
+            msg ("You do not have enough money to buy the eucalyptus tree.")
+          }
+        ]]></buyeucalyptustree>
+        <buybrownpaint type="script"><![CDATA[
+          if (Koala.money >=5  ) {
+            AddToInventory (Brown Paint)
+          }
+          else {
+            msg ("You do not have enough money to buy the paint.")
+          }
+        ]]></buybrownpaint>
+        <object name="Eucalyptus Tree">
+          <inherit name="editor_object" />
+          <look>Your tummy grumbles and you want to eat it now.</look>
+          <inventoryverbs type="stringlist">
+            <value>Look at</value>
+            <value>Drop</value>
+          </inventoryverbs>
+        </object>
+        <object name="Brown Paint">
+          <inherit name="editor_object" />
+          <feature_usegive />
+          <look>You could use the paint on canvas, paper, or even clothes.</look>
+          <use type="script">
+            if (Got(Janitor Uniform)) {
+              AddToInventory (Zookeeper Uniform)
+              RemoveObject (Brown Paint)
+              RemoveObject (Janitor Uniform)
+              msg ("You paint the janitor's uniform to look like a zookeeper's.")
+            }
+          </use>
+          <selfuseon type="scriptdictionary">
+            <item key="Janitor Uniform">
+              AddToInventory (Zookeeper Uniform)
+              RemoveObject (Brown Paint)
+              RemoveObject (Janitor Uniform)
+              msg ("You paint the janitor's uniform to look like a zookeeper's.")
+            </item>
+          </selfuseon>
+        </object>
+      </object>
+      <exit to="Herbivore Street" />
+    </object>
+    <object name="Zoo">
+      <inherit name="editor_room" />
+      <visible type="boolean">false</visible>
+      <enter type="script">
+        if (Koala.isDisguised = false) {
+          msg ("The public notices that you are a wild animal and a concerned individual calls animal control. You are captured and sent to the zoo to live in koala prison until you die.")
+          finish
+        }
+      </enter>
+      <beforeenter type="script">
+        msg ("The zoo is pretty bad, but you aren't biased at all. The glass exhibits look nice, but the animals all look miserable. You see a zookeeper making rounds from exhibit to exhibit, and you notice a koala exhibit is placed right near the entrance. You'd say hi but you don't want to blow your cover.")
+      </beforeenter>
+      <exit to="Herbivore Street" />
+      <object name="Koala Exhibit">
+        <inherit name="editor_room" />
+        <beforeenter type="script">
+        </beforeenter>
+        <exit to="Zoo" />
+      </object>
+      <exit name="Koala Exhibit Gate" to="Koala Exhibit">
+        <locked type="boolean">false</locked>
+        <runscript />
+        <script type="script">
+          if (Got(key)) {
+            if (Zookeeper Uniform.worn = true) {
+              msg ("You win and you  free all the koalas!")
+              finish
+            }
+          }
+        </script>
+      </exit>
+      <object name="Zookeeper">
+        <inherit name="editor_object" />
+        <inherit name="male" />
+        <look>The Zookeeper is wearing a uniform that looks like a brown janitors uniform. He also has a master key dangling from his belt.</look>
+        <speak>Hi! I'm the zookeeper. I make sure all the animals have food and water and are as happy as they can be!</speak>
+        <stealkey type="script"><![CDATA[
+          if (Koala.pickpocket >= 3) {
+            AddToInventory (key)
+          }
+        ]]></stealkey>
+        <object name="key">
+          <inherit name="editor_object" />
+          <take type="boolean">false</take>
+          <look>It looks like any other key.</look>
+          <inventoryverbs type="stringlist">
+            <value>Look at</value>
+            <value>Drop</value>
+          </inventoryverbs>
+        </object>
+      </object>
+    </object>
+    <object name="Home of Jeremy">
+      <inherit name="editor_room" />
+      <visible type="boolean">false</visible>
+      <enter type="script">
+        if (Koala.isDisguised = false) {
+          msg ("The public notices that you are a wild animal and a concerned individual calls animal control. You are captured and sent to the zoo to live in koala prison until you die.")
+          finish
+        }
+      </enter>
+      <beforeenter type="script">
+        msg ("Jeremy's home is a nice quaint house. Large windows let in natural light. The eucalyptus plant sits on a table.")
+      </beforeenter>
+      <object name="Eucalyptus Tree1">
+        <inherit name="editor_object" />
+        <alias>Eucalyptus Tree</alias>
+        <look>It looks like a pretty bad science project.</look>
+        <speak>*photosynthesis noises* I don't know why you tried that.</speak>
+        <inventoryverbs type="stringlist">
+          <value>Look at</value>
+          <value>Drop</value>
+        </inventoryverbs>
+        <steal type="script"><![CDATA[
+          if (Koala.pickpocket >= 3) {
+            AddToInventory (Eucalyptus Tree1)
+          }
+          else {
+            msg ("You don't have enough practice stealing things to do that.")
+          }
+        ]]></steal>
+      </object>
+      <exit to="Herbivore Street" />
+    </object>
+    <object name="Pizza Shop">
+      <inherit name="editor_room" />
+      <visible type="boolean">false</visible>
+      <enter type="script">
+        if (Koala.isDisguised = false) {
+          msg ("The public notices that you are a wild animal and a concerned individual calls animal control. You are captured and sent to the zoo to live in koala prison until you die.")
+          finish
+        }
+      </enter>
+      <beforeenter type="script">
+        msg ("Mmmm, the smell of oil greets you as you enter the pizza shop. A balding manager stands behind the counter and periodically answers the phone. A stack of pizzas is waiting to be delivered.")
+      </beforeenter>
+      <object name="Manager">
+        <inherit name="editor_object" />
+        <inherit name="male" />
+        <look>The manager seems to be waiting for the pizzas to be delivered.</look>
+        <speak type="script">
+          if (Pizza Shop Hat.worn = true) {
+            if (Got(id)) {
+              msg ("The manager exclaims, \"Hey, aren't you supposed to be delivering pizzas right now?\" He probably thinks you are the delivery boy you got the hat from.")
+              AddToInventory (Pizza)
+              msg ("You get the pizza from the manager.")
+            }
+            else {
+              msg ("\"Wait, how are you going to deliver that pizza without a driver's license?\" the manager asks. \"Come back with your id then I'll give you the pizza\"")
+            }
+          }
+          else {
+            msg ("Hi, do you want to order a pizza? Also, my delivery boy has gone missing. If you see a college student with a pizza store hat, tell him to come pick up these pizzas.")
+          }
+        </speak>
+        <object name="Pizza">
+          <inherit name="editor_object" />
+          <feature_usegive />
+          <look>The cheese is sticking to the top of the box, and the oil is pooling on the cheese. How do humans eat this thing?</look>
+          <eat>You shouldn't be eating the customer's pizza!</eat>
+          <displayverbs type="stringlist">
+            <value>Look at</value>
+            <value>Take</value>
+            <value>Give</value>
+          </displayverbs>
+          <use type="script">
+            msg ("You shouldn't eat a customer's pizza!")
+          </use>
+          <givesingle type="script">
+            if (game.pov.parent = Skyscraper) {
+              if (Pizza Shop Hat.worn = true) {
+                IncreaseMoney (5)
+                msg ("The hungry man pays you $5. \"Thanks for the pizza!\" he says.")
+                RemoveObject (Pizza)
+              }
+              else {
+                msg ("\"Hey, why do you have my pizza!\" the man shouts, grabbing the pizza from your hands.")
+              }
+            }
+            else {
+              msg ("You should be delivering this pizza to a customer!")
+            }
+          </givesingle>
+          <giveto type="scriptdictionary">
+            <item key="Hungry Man">
+              if (Pizza Shop Hat.worn = true) {
+                IncreaseMoney (5)
+                msg ("The hungry man pays you $5. \"Thanks for the pizza!\" he says.")
+                RemoveObject (Pizza)
+              }
+              else {
+                msg ("\"Hey, why do you have my pizza!\" the man shouts, grabbing the pizza from your hands.")
+              }
+            </item>
+          </giveto>
+        </object>
+      </object>
+      <exit to="Herbivore Street" />
+    </object>
+    <exit to="Eucaway" />
+    <exit to="Home Improvement Store" />
+    <exit to="Zoo" />
+    <exit to="Pizza Shop" />
+    <exit to="Home of Jeremy">
+      <runscript />
+      <script type="script">
+        if (Koala.talkJeremy = true) {
+          MoveObject (Koala, Home of Jeremy)
+        }
+        else {
+          msg ("Why are you trying to break into a house?")
+        }
+      </script>
+    </exit>
+    <exit to="Farmers Market" />
+  </object>
+  <verb>
+    <property>talk</property>
+    <pattern>talk </pattern>
+    <defaultexpression>"You can't talk  " + object.article + "."</defaultexpression>
+  </verb>
+  <verb>
+    <property>pickpocket</property>
+    <pattern>pickpocket</pattern>
+    <defaultexpression>"You can't pickpocket " + object.article + "."</defaultexpression>
+  </verb>
+  <verb>
+    <property>steal</property>
+    <pattern>steal</pattern>
+    <defaultexpression>"You can't steal " + object.article + "."</defaultexpression>
+  </verb>
+  <verb>
+    <property>takecoins</property>
+    <pattern>take coins</pattern>
+    <defaultexpression>"You can't take coins " + object.article + "."</defaultexpression>
+  </verb>
+  <object name="Farmers Market">
+    <inherit name="editor_room" />
+    <enter type="script">
+      if (Koala.isDisguised = false) {
+        msg ("The public notices that you are a wild animal and a concerned individual calls animal control. You are captured and sent to the zoo to live in koala prison until you die.")
+        finish
+      }
+    </enter>
+    <beforeenter type="script">
+      msg ("You can see a lot of vendors selling their various farm goods. There is only one that interests you: the bread stand.")
+    </beforeenter>
+    <exit to="Herbivore Street" />
+    <object name="Seller">
+      <inherit name="editor_object" />
+      <inherit name="male" />
+      <speak>Hi, would you like to buy some bread? The regular bread costs $5, and the eucabread costs $10.</speak>
+      <look>He looks like he can use some more business right now.</look>
+      <stealbread type="script"><![CDATA[
+        if (Koala.pickpocket >= 3) {
+          AddToInventory (Bread1)
+        }
+        else {
+          msg ("You don't have enough practice stealing things to do that.")
+        }
+      ]]></stealbread>
+      <buybread type="script"><![CDATA[
+        if (Koala.money >=5) {
+          AddToInventory (Bread1)
+        }
+        else {
+          msg ("You do not have enough money to buy bread.")
+        }
+      ]]></buybread>
+      <buyeucabread type="script"><![CDATA[
+        if (Koala.money >=10  ) {
+          AddToInventory (Eucabread1)
+          msg ("The seller gives you a fresh loaf of eucabread and you win the game! UwU")
+          finish
+        }
+        else {
+          msg ("You do not have enough money to buy eucabread.")
+        }
+      ]]></buyeucabread>
+      <object name="Bread1">
+        <inherit name="editor_object" />
+        <alias>Bread</alias>
+        <look>Yay non-eucalyptus carbsss! You can try to eat it, but you'll have the poops and die X_X</look>
+        <inventoryverbs type="stringlist">
+          <value>Look at</value>
+          <value>Drop</value>
+        </inventoryverbs>
+        <eat type="script">
+          msg ("You should have checked the bread out before eating it. You can only eat the eucabread #deathByPoops")
+          finish
+        </eat>
+      </object>
+      <object name="Eucabread1">
+        <inherit name="editor_object" />
+        <alias>Eucabread</alias>
+        <inventoryverbs type="stringlist">
+          <value>Look at</value>
+          <value>Drop</value>
+        </inventoryverbs>
+      </object>
+    </object>
+  </object>
+  <verb>
+    <property>buybread</property>
+    <pattern>buy bread</pattern>
+    <defaultexpression>"You can't buy bread " + object.article + "."</defaultexpression>
+  </verb>
+  <verb>
+    <property>buyeucabread</property>
+    <pattern>buy eucabread</pattern>
+    <defaultexpression>"You can't buy eucabread " + object.article + "."</defaultexpression>
+  </verb>
+  <verb>
+    <property>buyeucalyptustree</property>
+    <pattern>buy eucalyptus tree</pattern>
+    <defaultexpression>"You can't buy eucalyptus tree " + object.article + "."</defaultexpression>
+  </verb>
+  <verb>
+    <property>buybrownpaint</property>
+    <pattern>buy brown paint</pattern>
+    <defaultexpression>"You can't buy brown paint " + object.article + "."</defaultexpression>
+  </verb>
+  <verb>
+    <property>stealbread</property>
+    <pattern>steal bread</pattern>
+    <defaultexpression>"You can't steal bread " + object.article + "."</defaultexpression>
+  </verb>
+  <verb>
+    <property>stealeucabread</property>
+    <pattern>steal eucabread</pattern>
+    <defaultexpression>"You can't steal eucabread " + object.article + "."</defaultexpression>
+  </verb>
+  <verb>
+    <property>touse</property>
+    <pattern>to use</pattern>
+    <defaultexpression>"You can't to use " + object.article + "."</defaultexpression>
+  </verb>
+  <verb>
+    <property>paint</property>
+    <pattern>paint</pattern>
+    <defaultexpression>"You can't paint " + object.article + "."</defaultexpression>
+  </verb>
+  <verb>
+    <property>bakeeucabread</property>
+    <pattern>bake eucabread</pattern>
+    <defaultexpression>"You can't bake eucabread " + object.article + "."</defaultexpression>
+  </verb>
+  <verb>
+    <property>stealkey</property>
+    <pattern>steal key</pattern>
+    <defaultexpression>"You can't steal key " + object.article + "."</defaultexpression>
+  </verb>
+</asl>
